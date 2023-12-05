@@ -1,6 +1,10 @@
 const Job = require('../models'); // Adjust the import path as needed
+const dateScalar = require('../utils/dateScalar');
 
 const resolvers = {
+
+    Date: dateScalar,
+
     Query: {
         // Fetch all jobs
         jobs: async () => {

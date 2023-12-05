@@ -34,7 +34,7 @@ async function startServer() {
     );
 
     await new Promise(resolve => httpServer.listen({ port: PORT }, resolve));
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`);
+    console.log(`🚀 Server ready at http://localhost:${PORT}/graphql`);
 }
 
 startServer().catch(err => console.error('Error starting server:', err));

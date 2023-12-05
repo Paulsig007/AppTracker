@@ -13,7 +13,7 @@ const jobSchema = new Schema({
         type: String,
         required: true,
     },
-    date: {
+    dateApplied: {
         type: Date,
         required: true,
     },
@@ -33,4 +33,4 @@ const jobSchema = new Schema({
 
 const Job = model('Job', jobSchema);
 
-module.exports= { Job };
+module.exports= Job ;

@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-custom {
+    background-color: #ffffff;
+}
+
+.dark .bg-custom {
+    background-color: #333333;
+}

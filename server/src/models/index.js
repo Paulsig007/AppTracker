@@ -1,3 +1,3 @@
 const Job = require('./Job');
 
-module.exports = { Job };
+module.exports =  Job ;

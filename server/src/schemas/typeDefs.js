@@ -1,13 +1,15 @@
 const { gql } = require('graphql-tag');
-    
 
 const typeDefs = gql`
+
+    scalar Date
+
     type Job {
         _id: ID
         company: String!
         jobTitle: String!
         link: String!
-        dateApplied: String!
+        dateApplied: Date
         contact: String
         status: String
         notes: String
@@ -23,17 +25,17 @@ const typeDefs = gql`
             company: String!
             jobTitle: String!
             link: String!
-            dateApplied: String!
+            dateApplied: Date
             contact: String
             status: String
             notes: String
         ): Job
         updateJob(
             _id: ID!
-            company: String
-            jobTitle: String
-            link: String
-            dateApplied: String
+            company: String!
+            jobTitle: String!
+            link: String!
+            dateApplied: Date
             contact: String
             status: String
             notes: String
