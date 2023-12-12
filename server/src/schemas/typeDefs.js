@@ -9,7 +9,7 @@ const typeDefs = gql`
         company: String!
         jobTitle: String!
         link: String!
-        dateApplied: Date
+        dateApplied: Date!
         contact: String
         status: String
         notes: String
@@ -21,23 +21,23 @@ const typeDefs = gql`
     }
 
     type Mutation {
-        addJob(
-            company: String!
-            jobTitle: String!
-            link: String!
-            dateApplied: Date
-            contact: String
-            status: String
+        addJob( 
+            company: String!, 
+            jobTitle: String!, 
+            link: String!, 
+            dateApplied: Date!, 
+            contact: String, 
+            status: String, 
             notes: String
         ): Job
         updateJob(
-            _id: ID!
-            company: String!
-            jobTitle: String!
-            link: String!
-            dateApplied: Date
-            contact: String
-            status: String
+            _id: ID,
+            company: String!,
+            jobTitle: String,
+            link: String,
+            dateApplied: Date,
+            contact: String,
+            status: String,
             notes: String
         ): Job
         removeJob(_id: ID!): Job

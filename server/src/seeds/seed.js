@@ -1,5 +1,5 @@
 const db = require("../config/connection");
-const { Job } = require("../models");
+const Job = require("../models/Job");
 const jobSeeds = require("./jobSeeds.json");
 
 db.once("open", async () => {

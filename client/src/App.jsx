@@ -3,11 +3,11 @@ import Table from './components/table';
 
 function App() {
 
-
   return (
-    <div className="bg-gray-900 dark:bg-white">
+    <div className="bg-white dark:bg-gray-900">
       <div className='
       max-w-screen-xl 
+      min-h-screen
       mt-0 mb-0 mx-auto 
       p-8 
       text-center'>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
 const DarkModeToggle = () => {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
 
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode)
@@ -9,10 +9,10 @@ const DarkModeToggle = () => {
 
   return (
     <button
-        className="p-2 rounded font-bold bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:"
+        className="p-2 rounded font-bold dark:bg-gray-200 bg-black dark:text-gray-800 text-gray-200 dark:hover:bg-gray-300 hover:"
         onClick={() => setDarkMode(!darkMode)}
     >
-        {darkMode ? 'Dark Mode' : 'Light Mode'}
+        {darkMode ? 'Light Mode' : 'Dark Mode'}
     </button>
     );    
 };

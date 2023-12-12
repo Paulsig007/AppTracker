@@ -1,4 +1,4 @@
-const Job = require('../models'); // Adjust the import path as needed
+const Job  = require('../models/Job'); // Adjust the import path as needed
 const dateScalar = require('../utils/dateScalar');
 
 const resolvers = {
@@ -30,7 +30,7 @@ const resolvers = {
         // Add a new job
         addJob: async (_, { company, jobTitle, link, dateApplied, contact, status, notes }) => {
             try {
-                const newJob = new Job({ company, jobTitle, link, date: dateApplied, contact, status, notes });
+                const newJob = new Job({ company, jobTitle, link, dateApplied, contact, status, notes });
                 return await newJob.save();
             } catch (error) {
                 console.error("Error adding new job:", error);
@@ -41,7 +41,7 @@ const resolvers = {
         // Update an existing job
         updateJob: async (_, { _id, company, jobTitle, link, dateApplied, contact, status, notes }) => {
             try {
-                return await Job.findByIdAndUpdate(_id, { company, jobTitle, link, date: dateApplied, contact, status, notes }, { new: true });
+                return await Job.findOneAndUpdate(_id, { company, jobTitle, link, date: dateApplied, contact, status, notes }, { new: true });
             } catch (error) {
                 console.error(`Error updating job with ID ${_id}:`, error);
                 throw new Error('Error updating job');
@@ -51,10 +51,12 @@ const resolvers = {
         // Remove a job
         removeJob: async (_, { _id }) => {
             try {
-                return await Job.findByIdAndRemove(_id);
+                const deletedJob = await Job.findByIdAndDelete(_id);
+                if(!deletedJob) throw new Error('No job with that ID');
+                return deletedJob;
             } catch (error) {
                 console.error(`Error removing job with ID ${_id}:`, error);
-                throw new Error('Error removing job');
+                throw new Error(error);
             }
         },
     },
