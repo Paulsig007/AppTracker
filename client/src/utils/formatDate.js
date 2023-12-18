@@ -1,12 +1,11 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
 const formatDate = (isoString) => {
-    const date = new Date(isoString);
-  
-    // JavaScript months are 0-indexed, so add 1 for the correct month number
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-  
-    return `${month}/${day}/${year}`;
+    const localDate = dayjs.utc(isoString).local();
+    return localDate.format('MM/DD/YYYY');
   }
 
     export default formatDate;

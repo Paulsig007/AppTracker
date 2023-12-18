@@ -29,6 +29,10 @@ const jobSchema = new Schema({
         type: String,
         required: false,
     },
+    lastUpdated: {
+        type: Date,
+        default: Date.now,
+    },
 });
 
 const Job = model('Job', jobSchema);

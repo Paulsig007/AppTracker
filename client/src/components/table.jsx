@@ -7,6 +7,7 @@ import { FaEdit } from 'react-icons/fa';
 import JobInfoForm from './jobInfoForm';
 
 import formatDate from '../utils/formatDate';
+import sortJobs from '../utils/sortJobs';
 
 const Table = () => {
   const [ showModal, setShowModal ] = useState(false);
@@ -29,12 +30,13 @@ const Table = () => {
   if (error) return `Error! ${error.message}`;
 
 
-  console.log(data);
+  // console.log(data);
 
   // update job
 
   const handleSetCurrentJob = async (job) => {
     setCurrentJob(job);
+    // setTimeout(() => handleShowModal(true), 0);
     handleShowModal(true);
   };
 
@@ -42,15 +44,15 @@ const Table = () => {
   if (removeError) return `Error! ${removeError.message}`;
 
   const handleDelete = async (jobId) => {
-    console.log("Deleting job with id: ", jobId);
+    // console.log("Deleting job with id: ", jobId);
     try {
       const { data } = await removeJob({
         variables: { _id: jobId },
       });
       refetch();
-      console.log(data);
+      // console.log(data);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   };
   
@@ -68,7 +70,7 @@ const Table = () => {
 
   const jobs = data?.jobs || [];
 
-  const sortedJobs = jobs.sort((a, b) => new Date(b.dateApplied) - new Date(a.dateApplied));
+  const sortedJobs = [...jobs].sort((sortJobs));
 
   return (
     <div className='flex'>

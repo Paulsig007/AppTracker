@@ -1,27 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_JOB, UPDATE_JOB } from '../utils/mutations';
-import formatDate from '../utils/formatDate';
+import dayjs from 'dayjs';
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import utc from 'dayjs-plugin-utc';
 import { FaWindowClose } from 'react-icons/fa';
+import '../styles/custom.css';
+
+dayjs.extend(utc);
+
+// const formatDate = (date) => dayjs(date).format('MM/DD/YYYY');
 
 const JobInfoForm = ({ job, handleCloseModal, refetchJobs }) => {
   const [formState, setFormState] = useState({
     company: '',
     jobTitle: '',
     link: '',
-    dateApplied: '',
+    dateApplied: new Date(),
     contact: '',
     status: '',
     notes: '',
   });
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     if (job) {
+      const jobDate = new Date(job.dateApplied);
       setFormState({
         company: job.company,
         jobTitle: job.jobTitle,
         link: job.link,
-        dateApplied: formatDate(job.dateApplied),
+        dateApplied: jobDate,
         contact: job.contact,
         status: job.status,
         notes: job.notes,
@@ -29,17 +40,26 @@ const JobInfoForm = ({ job, handleCloseModal, refetchJobs }) => {
     }
   }, [job]);
 
+  const handleDateChange = (date) => {
+    setFormState(prevState => ({
+      ...prevState,
+      dateApplied: date,
+    }));
+  };
 
-  const [addJob, { error:addError }] = useMutation(ADD_JOB);
-  const [updateJob, { error:updateError }] = useMutation(UPDATE_JOB);
+  const [addJob, { error: addError }] = useMutation(ADD_JOB);
+  const [updateJob, { error: updateError }] = useMutation(UPDATE_JOB);
 
   const handleFormChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormState({
-      ...formState,
-      [name]: value,
-    });
+    const { 
+      name, 
+      value } = event.target;
+    setFormState(prevState => ({
+      ...prevState,
+      [
+        name]: 
+        value,
+    }));
   };
 
   if (addError) return `Error! ${addError.message}`;
@@ -48,127 +68,132 @@ const JobInfoForm = ({ job, handleCloseModal, refetchJobs }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
+    const utcDate = dayjs(formState.dateApplied).utc().format('MM/DD/YYYY');
+    const submissionData = { ...formState, dateApplied: utcDate };
+
     try {
-      if (job) {
-        const {data} = await updateJob({
-          variables: {
-            _id: job._id,
-            ...formState,
-          },
-        });
-        console.log('Updated job: ', data);
-      } else {
-      const { data } = await addJob({
-        variables: { ...formState },
-      });
-      console.log(data);
-      }
+      await submitJobData(submissionData);
       handleCloseModal();
       refetchJobs();
     } catch (err) {
       console.error(err);
     }
-  }
+  };
+
+  const submitJobData = async (submissionData) => {
+    if (job) {
+      await updateJob({
+        variables: { _id: job._id, ...submissionData },
+      });
+    } else {
+      await addJob({ variables: submissionData });
+    }
+  };
 
   return (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center">  
-    <div className='bg-gray-50 p-4 rounded-lg shadow-lg max-w-md w-full'>
-      <button className=" text-red-500 hover:text-red-800 ml-96 " onClick={handleCloseModal}>
-          <FaWindowClose />
-      </button>
-      <form onSubmit={handleFormSubmit}>
-        <div className="flex flex-col">
-          <label htmlFor="company">Company</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Company Name'
-            type="text"
-            name="company"
-            id="company"
-            value={formState.company}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="jobTitle">Job Title</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Job Title'
-            type="text"
-            name="jobTitle"
-            id="jobTitle"
-            value={formState.jobTitle}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="link">Company Link</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Company Website'
-            type="text"
-            name="link"
-            id="link"
-            value={formState.link}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="dateApplied">Date Applied</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Date Applied'
-            type="text"
-            name="dateApplied"
-            id="dateApplied"
-            value={formState.dateApplied}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="contact">Contact</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Company Contacts (Who you know)'
-            type="text"
-            name="contact"
-            id="contact"
-            value={formState.contact}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="status">Status</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Status (Pending, Interview, Offer, Rejected)'
-            type="text"
-            name="status"
-            id="status"
-            value={formState.status}
-            onChange={handleFormChange}
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="notes">Notes</label>
-          <input
-            className='border-2 border-gray-500 rounded text-black'
-            placeholder='Notes'
-            type="text"
-            name="notes"
-            id="notes"
-            value={formState.notes}
-            onChange={handleFormChange}
-          />
-        </div>
-        
-        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 mt-4 rounded">
-          {job ? 'Update Job' : 'Add Job'}
-        </button>
-      </form>  
-    </div>  
-  </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center">
+      <div className='bg-gray-50 p-4 rounded-lg shadow-lg max-w-md w-full'>
+        <CloseButton handleCloseModal={handleCloseModal} />
+        <JobForm 
+          formState={formState}
+          selectedDate={selectedDate}
+          handleDateChange={handleDateChange}
+          handleFormChange={handleFormChange}
+          handleFormSubmit={handleFormSubmit}
+        />
+      </div>
+    </div>
   );
-}
+};
+
+const CloseButton = ({ handleCloseModal }) => (
+  <Button 
+    className='text-red-700 hover:text-red-800 ml-96'
+    color="secondary" 
+    onClick={handleCloseModal}
+    startIcon={<FaWindowClose />}
+  >
+    Close
+  </Button>
+);
+
+const JobForm = ({ formState, handleDateChange, handleFormChange, handleFormSubmit }) => (
+  <form onSubmit={handleFormSubmit}>
+    <TextField 
+    label="Company" 
+    name="company" 
+    value={formState.company} 
+    onChange={handleFormChange} 
+    margin="normal" 
+    fullWidth 
+    />
+    <TextField 
+    label="Job Title" 
+    name="jobTitle" 
+    value={formState.jobTitle} 
+    onChange={handleFormChange} 
+    margin="normal" 
+    fullWidth 
+    />
+    <TextField 
+    label="Company Link" 
+    name="link" 
+    value={formState.link} 
+    onChange={handleFormChange} 
+    margin="normal" 
+    fullWidth 
+    />
+    <ReactDatePicker 
+    wrapperClassName="w-full"
+    selected={formState.dateApplied} 
+    onChange={handleDateChange} 
+    dateFormat="MM/dd/yyyy" 
+    className="border-color border-2 px-4 py-2 text-black border-blue-600 rounded" 
+    />
+    <TextField 
+    label="Contact" 
+    name="contact" 
+    value={formState.contact} 
+    onChange={handleFormChange} 
+    margin="normal" 
+    fullWidth 
+    />
+    <StatusSelect status={formState.status} handleFormChange={handleFormChange} 
+    />
+    <TextField 
+    label="Notes" 
+    name="notes" 
+    value={formState.notes} 
+    onChange={handleFormChange} 
+    margin="normal" 
+    fullWidth multiline 
+    />
+    <SubmitButton />
+  </form>
+);
+
+const StatusSelect = ({ status, handleFormChange }) => (
+  <FormControl 
+  fullWidth 
+  margin="normal">
+    <InputLabel>Status</InputLabel>
+    <Select 
+    label="Status" 
+    name="status" 
+    value={status} 
+    onChange={handleFormChange}>
+      {['Applied', 'Interview Scheduled', 'Round 1 Complete', 'Round 2 Complete', 'Round 3 Complete', 'Offer Made', 'Rejected', 'Accepted', 'Declined', 'Withdrew'].map(statusOption => (
+        <MenuItem key={statusOption} 
+        value={statusOption}>{statusOption}</MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+);
+
+const SubmitButton = () => (
+  <Button type="submit" variant="contained" color="primary" className="mt-4">
+    Submit
+  </Button>
+);
 
 export default JobInfoForm;

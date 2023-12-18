@@ -13,6 +13,7 @@ const typeDefs = gql`
         contact: String
         status: String
         notes: String
+        lastUpdated: Date
     }
 
     type Query {
@@ -29,16 +30,18 @@ const typeDefs = gql`
             contact: String, 
             status: String, 
             notes: String
+            lastUpdated: Date
         ): Job
         updateJob(
-            _id: ID,
-            company: String!,
+            _id: ID!,
+            company: String,
             jobTitle: String,
             link: String,
             dateApplied: Date,
             contact: String,
             status: String,
             notes: String
+            lastUpdated: Date
         ): Job
         removeJob(_id: ID!): Job
     }

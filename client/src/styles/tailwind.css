@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import './custom.css';
 
 .bg-custom {
     background-color: #ffffff;
@@ -9,3 +10,4 @@
 .dark .bg-custom {
     background-color: #333333;
 }
+

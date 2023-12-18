@@ -11,6 +11,7 @@ export const QUERY_JOBS = gql`
             contact
             status
             notes
+            lastUpdated
         }
     }
 `;
@@ -26,6 +27,7 @@ export const QUERY_JOB = gql`
             contact
             status
             notes
+            lastUpdated
         }
     }
 `;

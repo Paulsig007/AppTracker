@@ -9,7 +9,9 @@ const resolvers = {
         // Fetch all jobs
         jobs: async () => {
             try {
-                return await Job.find({});
+                return await Job.find({})
+                .sort({ lastUpdated: -1 })
+                .exec();
             } catch (error) {
                 console.error("Error fetching jobs:", error);
                 throw new Error('Error fetching jobs');
@@ -28,7 +30,7 @@ const resolvers = {
     },
     Mutation: {
         // Add a new job
-        addJob: async (_, { company, jobTitle, link, dateApplied, contact, status, notes }) => {
+        addJob: async (_, { company, jobTitle, link, dateApplied, contact, status, notes, lastUpdated }) => {
             try {
                 const newJob = new Job({ company, jobTitle, link, dateApplied, contact, status, notes });
                 return await newJob.save();
@@ -39,9 +41,12 @@ const resolvers = {
         },
 
         // Update an existing job
-        updateJob: async (_, { _id, company, jobTitle, link, dateApplied, contact, status, notes }) => {
+        updateJob: async (_, { _id, company, jobTitle, link, dateApplied, contact, status, notes, lastUpdated }) => {
             try {
-                return await Job.findOneAndUpdate(_id, { company, jobTitle, link, date: dateApplied, contact, status, notes }, { new: true });
+                return await Job.findByIdAndUpdate(
+                    _id, 
+                    { company, jobTitle, link, dateApplied, contact, status, notes, lastUpdated: new Date() }, 
+                    { new: true });
             } catch (error) {
                 console.error(`Error updating job with ID ${_id}:`, error);
                 throw new Error('Error updating job');

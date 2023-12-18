@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 
 
 export const ADD_JOB = gql`
-    mutation addJob($company: String!, $jobTitle: String!, $link: String!, $dateApplied: Date!, $contact: String, $status: String, $notes: String) {
-        addJob(company: $company, jobTitle: $jobTitle, link: $link, dateApplied: $dateApplied, contact: $contact, status: $status, notes: $notes) {
+    mutation addJob($company: String!, $jobTitle: String!, $link: String!, $dateApplied: Date!, $contact: String, $status: String, $notes: String, $lastUpdated: Date) {
+        addJob(company: $company, jobTitle: $jobTitle, link: $link, dateApplied: $dateApplied, contact: $contact, status: $status, notes: $notes, lastUpdated: $lastUpdated) {
             _id
             company
             jobTitle
@@ -12,13 +12,14 @@ export const ADD_JOB = gql`
             contact
             status
             notes
+            lastUpdated
         }
     }
 `;
 
 export const UPDATE_JOB = gql`
-    mutation updateJob($id: ID, $company: String!, $jobTitle: String, $link: String, $dateApplied: Date, $contact: String, $status: String, $notes: String) {
-        updateJob(_id: $id, company: $company, jobTitle: $jobTitle, link: $link, dateApplied: $dateApplied, contact: $contact, status: $status, notes: $notes) {
+    mutation updateJob($_id: ID!, $company: String, $jobTitle: String, $link: String, $dateApplied: Date, $contact: String, $status: String, $notes: String, $lastUpdated: Date) {
+        updateJob(_id: $_id, company: $company, jobTitle: $jobTitle, link: $link, dateApplied: $dateApplied, contact: $contact, status: $status, notes: $notes, lastUpdated: $lastUpdated) {
             _id
             company
             jobTitle
@@ -27,6 +28,7 @@ export const UPDATE_JOB = gql`
             contact
             status
             notes
+            lastUpdated
         }
     }
 `;
@@ -42,6 +44,7 @@ export const REMOVE_JOB = gql`
             contact
             status
             notes
+            lastUpdated
         }
     }
 `;
